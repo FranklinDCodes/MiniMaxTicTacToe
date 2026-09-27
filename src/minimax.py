@@ -8,9 +8,9 @@ class MinimaxSearch:
 
     def __init__(
         self,
-        state_transition_func: function, 
-        possible_action_func: function,
-        reward_func: function):
+        state_transition_func: any, 
+        possible_action_func: any,
+        reward_func: any):
 
         self.state_transition_func = state_transition_func
         self.possible_action_func = possible_action_func

@@ -64,29 +64,6 @@ class Action(int):
         return self.ACTION_NAMES[self - 1]
 
 
-# state object type
-# class np.ndarray(np.ndarray):
-
-#     """
-#         x's are 1, o's are 2, empty spaces are 0
-#         the x will always represent the agent
-#     """
-
-#     def __init__(self, *args, **kwargs):
-
-#         if len(args) == 0 and len(kwargs) == 0:
-
-#             # default init with empty board
-#             super().__init__([[0, 0, 0], [0, 0, 0], [0, 0, 0]], dtype='uint8')
-
-#         else:
-
-#             super().__init__(*args, **kwargs)
-
-#     def __str__(self):
-#         return ""
-    
-
 class TicTacToe:
 
     @staticmethod
@@ -282,3 +259,16 @@ class TicTacToe:
             return -1
 
         return 0
+
+
+def print_state(state: np.ndarray) -> None:
+
+    print("+---+---+---+")
+
+    for row in state:
+
+        print("| ", end="")
+        print(*[[' ','X','O'][i] for i in row], sep=" | ", end="")
+        print(" |")
+        print("+---+---+---+")
+
