@@ -105,7 +105,7 @@ class TicTacToe:
         return state_prime
 
     @staticmethod
-    def _rotate_45(A):
+    def _rotate_45(A: np.ndarray) -> np.ndarray:
 
         """
             intended to do the following transformation
@@ -134,7 +134,7 @@ class TicTacToe:
         return R
 
     @staticmethod
-    def _unrotate_45(A):
+    def _unrotate_45(A: np.ndarray) -> np.ndarray:
 
         """
             intended to do the following transformation
@@ -163,7 +163,7 @@ class TicTacToe:
         return R
 
     @staticmethod
-    def possible_actions(state: np.ndarray):
+    def possible_actions(state: np.ndarray) -> np.array:
 
         """
             returns a list of possible actions
@@ -190,8 +190,20 @@ class TicTacToe:
         # check if any have all moves on middle of board
         np_on_middle = np.sum(np_state_4, axis=(-2, -1)) == np.sum(np_state_4[:, 1, :], axis=-1)
 
+        # if all are indistinguishable
+        if np.all(np_on_middle):
+
+            # it means middle is only occupied or emptied
+            if state[1, 1] != 0:
+
+                return np.array([1, 2])
+
+            else:
+
+                return np.array([1, 2, 5])
+
         # check if any are indistinguishable
-        if np.any(np_on_middle):
+        elif np.any(np_on_middle):
 
             # put all options on a board
             np_all_possible = np.arange(1, 10).reshape(3, 3)
@@ -203,10 +215,16 @@ class TicTacToe:
             np_all_possible[3, :, :] = np.swapaxes(np_all_possible[3, :, :], -2, -1)
 
             # grab the rotation that reveals the redundancy
-            np_rotated_actions = np_all_possible[np_on_middle].squeeze()
+            # if multiple rotations do, just grab the first one
+            np_rotated_actions = np_all_possible[np_on_middle][0]
+            np_rotated_state = np_state_4[np_on_middle][0]
+
+            # grab any missing actions on the centerline
+            np_empty_on_centerline = (np_rotated_state[1, :] == 0)
+            np_add_from_centerline = np_rotated_actions[1, np_empty_on_centerline]
 
             # take the top row as possible actions
-            return np_rotated_actions[0]
+            return np.concatenate((np_rotated_actions[0], np_add_from_centerline))
 
         else:
 
@@ -220,7 +238,47 @@ class TicTacToe:
             return np_possible_actions
 
     @staticmethod
-    def reward():
-        pass
+    def _did_win(state: np.array, player: int) -> bool:
 
+        np_player_state = (state == player)
 
+        # make 4 versions of each board:
+        # standard, -45deg, 45deg, 90deg
+        np_state_4 = np.repeat(np_player_state[np.newaxis, :, :], 4, axis=-3)  # (4, 3, 3)
+        
+        # 90deg puts the columns as rows
+        np_state_4[1, :, :] = np.swapaxes(np_state_4[1, :, :], -2, -1)
+
+        # -45deg version puts the top-left to bottom-right diagonal as the center row
+        np_state_4[2, :, :] = TicTacToe._unrotate_45(np_state_4[2, :, :])
+
+        # 45deg puts the other diagonal as the center row
+        np_state_4[3, :, :] = TicTacToe._rotate_45(np_state_4[3, :, :])
+
+        # check for a straight win
+        if np.any(np_state_4[0:2, :, :].sum(axis=-1) == 3):
+
+            return True
+
+        # check for diagonal win
+        # sum middle rows for the last 2 rotations and see if they add up to 3
+        if np.any(np_state_4[2:, 1, :].sum(axis=-1) == 3):
+
+            return True
+
+        return False
+
+    @staticmethod
+    def reward(state: np.ndarray, player: int) -> int:
+
+        # check if player won
+        if TicTacToe._did_win(state, player):
+
+            return 1
+
+        # check if other player won
+        if TicTacToe._did_win(state, [2, 1][player - 1]):
+
+            return -1
+
+        return 0

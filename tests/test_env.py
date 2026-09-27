@@ -69,6 +69,15 @@ class TestEnv(unittest.TestCase):
         expected = np.array([1, 4, 7])
         actual = TicTacToe.possible_actions(state)
         np.testing.assert_equal(actual, expected)
+        
+        state = np.array([
+            [0, 1, 0],
+            [0, 1, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([1, 4, 7, 8])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
 
         state = np.array([
             [0, 0, 0],
@@ -78,6 +87,15 @@ class TestEnv(unittest.TestCase):
         expected = np.array([1, 2, 3])
         actual = TicTacToe.possible_actions(state)
         np.testing.assert_equal(actual, expected)
+
+        state = np.array([
+            [0, 0, 0],
+            [2, 1, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([1, 2, 3, 6])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
         
         state = np.array([
             [0, 0, 2],
@@ -85,6 +103,15 @@ class TestEnv(unittest.TestCase):
             [2, 0, 0]
         ])
         expected = np.array([4, 1, 2])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
+
+        state = np.array([
+            [0, 0, 2],
+            [0, 1, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([4, 1, 2, 7])
         actual = TicTacToe.possible_actions(state)
         np.testing.assert_equal(actual, expected)
                 
@@ -97,6 +124,216 @@ class TestEnv(unittest.TestCase):
         actual = TicTacToe.possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
+        state = np.array([
+            [2, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([2, 3, 6, 9])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
+
+        state = np.array([
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([1, 2])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
+
+        state = np.array([
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ])
+        expected = np.array([1, 2, 5])
+        actual = TicTacToe.possible_actions(state)
+        np.testing.assert_equal(actual, expected)
+
+    def test_did_win(self):
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [2, 0, 1]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [2, 0, 1]
+        ])
+        expected = False
+        actual = TicTacToe._did_win(state, 2)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 1, 0],
+            [0, 1, 0],
+            [2, 1, 2]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 1, 0],
+            [0, 1, 0],
+            [2, 2, 2]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 2)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 0, 0],
+            [0, 0, 0],
+            [2, 0, 2]
+        ])
+        expected = False
+        actual = TicTacToe._did_win(state, 2)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [2, 0, 2]
+        ])
+        expected = False
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 2, 2],
+            [0, 1, 2],
+            [2, 0, 0]
+        ])
+        expected = False
+        actual = TicTacToe._did_win(state, 2)
+        self.assertIs(expected, actual)
+        
+        state = np.array([
+            [1, 2, 1],
+            [2, 1, 2],
+            [2, 1, 2]
+        ])
+        expected = False
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+                
+        state = np.array([
+            [1, 1, 1],
+            [2, 1, 2],
+            [2, 1, 2]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+                
+        state = np.array([
+            [2, 0, 1],
+            [2, 0, 1],
+            [2, 0, 1]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 1)
+        self.assertIs(expected, actual)
+                        
+        state = np.array([
+            [2, 0, 1],
+            [2, 0, 1],
+            [2, 0, 1]
+        ])
+        expected = True
+        actual = TicTacToe._did_win(state, 2)
+        self.assertIs(expected, actual)
+
+    def test_reward(self):
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [2, 0, 1]
+        ])
+        expected = 1
+        actual = TicTacToe.reward(state, 1)
+        self.assertEqual(expected, actual)
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 1, 0],
+            [2, 0, 1]
+        ])
+        expected = -1
+        actual = TicTacToe.reward(state, 2)
+        self.assertEqual(expected, actual)
+        
+        state = np.array([
+            [1, 0, 0],
+            [0, 0, 0],
+            [2, 2, 1]
+        ])
+        expected = 0
+        actual = TicTacToe.reward(state, 1)
+        self.assertEqual(expected, actual)
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 0, 0],
+            [2, 2, 1]
+        ])
+        expected = 0
+        actual = TicTacToe.reward(state, 2)
+        self.assertEqual(expected, actual)
+
+        state = np.array([
+            [1, 0, 0],
+            [0, 0, 0],
+            [2, 2, 2]
+        ])
+        expected = 1
+        actual = TicTacToe.reward(state, 2)
+        self.assertEqual(expected, actual)
+
+        state = np.array([
+            [1, 0, 1],
+            [0, 0, 1],
+            [2, 2, 1]
+        ])
+        expected = 1
+        actual = TicTacToe.reward(state, 1)
+        self.assertEqual(expected, actual)
+        
+        state = np.array([
+            [1, 0, 1],
+            [0, 0, 1],
+            [2, 2, 1]
+        ])
+        expected = -1
+        actual = TicTacToe.reward(state, 2)
+        self.assertEqual(expected, actual)
+        
+        state = np.array([
+            [1, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ])
+        expected = 0
+        actual = TicTacToe.reward(state, 1)
+        self.assertEqual(expected, actual)
+        
+        state = np.array([
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ])
+        expected = 0
+        actual = TicTacToe.reward(state, 2)
+        self.assertEqual(expected, actual)
 
 if __name__ == "__main__":
 
