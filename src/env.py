@@ -3,7 +3,7 @@ import numpy as np
 
 
 # action object type
-class Action(int):
+class Action:
 
     """
         Each action is represented by an integer
@@ -37,31 +37,66 @@ class Action(int):
 
     def __init__(self, arg):
 
-        # has int init and coordinate init options
-        if isinstance(arg, tuple):
-            super().__init__(
-                (arg[0] * 3) + (arg[1] + 1)
-            )
-
+        if isinstance(arg, int):
+            self._num = arg
+        elif isinstance(arg, tuple) and len(arg) == 2:
+            self._num = arg[0] * 3 + (arg[1] + 1)
         else:
-            super().__init__(arg)
+            raise ValueError("Action must be initialized with 2-element tuple or int")
 
     def __iter__(self):
 
         return (
-            (self - 1) // 3,    # row calc
-            (self - 1) % 3      # col calc
+            (int(self - 1)) // 3,    # row calc
+            (int(self - 1)) % 3      # col calc
         )
 
-    def __getitiem__(self, idx):
+    def __getitem__(self, idx):
 
         return self.__iter__()[idx]
 
     def __len__(self):
         return 2
 
+    def __int__(self):
+        return self._num
+
+    def __float__(self):
+        return self._num
+    
     def __str__(self):
-        return self.ACTION_NAMES[self - 1]
+        return self.ACTION_NAMES[int(self - 1)]
+
+    def __add__(self, other):
+        if isinstance(other, Action):
+            return Action(self._num + other._num)
+        elif isinstance(other, int):
+            return Action(self._num + other)
+        return NotImplemented
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        if isinstance(other, Action):
+            return Action(self._num - other._num)
+        elif isinstance(other, int):
+            return Action(self._num - other)
+        return NotImplemented
+        
+    def __mul__(self, other):
+        if isinstance(other, Action):
+            return Action(self._num * other._num)
+        elif isinstance(other, int):
+            return Action(self._num * other)
+        return NotImplemented
+        
+    def __truediv__(self, other):
+        if isinstance(other, Action):
+            return Action(self._num / other._num)
+        elif isinstance(other, int):
+            return Action(self._num / other)
+        return NotImplemented
 
 
 class TicTacToe:
@@ -140,7 +175,7 @@ class TicTacToe:
         return R
 
     @staticmethod
-    def possible_actions(state: np.ndarray) -> np.array:
+    def unique_possible_actions(state: np.ndarray) -> list[Action]:
 
         """
             returns a list of possible actions
@@ -173,11 +208,11 @@ class TicTacToe:
             # it means middle is only occupied or emptied
             if state[1, 1] != 0:
 
-                return np.array([1, 2])
+                return [Action(1), Action(2)]
 
             else:
 
-                return np.array([1, 2, 5])
+                return [Action(1), Action(2), Action(5)]
 
         # check if any are indistinguishable
         elif np.any(np_on_middle):
@@ -201,7 +236,7 @@ class TicTacToe:
             np_add_from_centerline = np_rotated_actions[1, np_empty_on_centerline]
 
             # take the top row as possible actions
-            return np.concatenate((np_rotated_actions[0], np_add_from_centerline))
+            return list(map(Action, np.concatenate((np_rotated_actions[0], np_add_from_centerline)).tolist()))
 
         else:
 
@@ -212,7 +247,24 @@ class TicTacToe:
             np_all_possible = np.arange(1, 10).reshape(3, 3)
             np_possible_actions = np_all_possible[~np_occupied]
 
-            return np_possible_actions
+            return list(map(Action, np_possible_actions.tolist()))
+
+    @staticmethod
+    def possible_actions(state: np.ndarray) -> list[Action]:
+
+        """
+            returns a list of possible actions
+
+        """
+
+        # mask out taken spaces
+        np_occupied = state != 0
+
+        # get available
+        np_all_possible = np.arange(1, 10).reshape(3, 3)
+        np_possible_actions = np_all_possible[~np_occupied]
+
+        return [Action(i) for i in np_possible_actions.tolist()]
 
     @staticmethod
     def _did_win(state: np.array, player: int) -> bool:
@@ -246,7 +298,7 @@ class TicTacToe:
         return False
 
     @staticmethod
-    def reward(state: np.ndarray, player: int) -> int:
+    def reward(state: np.ndarray, player: int = 1) -> int:
 
         # check if player won
         if TicTacToe._did_win(state, player):
@@ -259,6 +311,11 @@ class TicTacToe:
             return -1
 
         return 0
+
+    @staticmethod
+    def game_over(state: np.ndarray) -> bool:
+
+        return TicTacToe._did_win(state, 1) or TicTacToe._did_win(state, 2) or len(TicTacToe.possible_actions(state)) == 0
 
 
 def print_state(state: np.ndarray) -> None:

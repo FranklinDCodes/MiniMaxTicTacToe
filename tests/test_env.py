@@ -29,7 +29,7 @@ class TestEnv(unittest.TestCase):
             [2, 0, 1]
         ])
         expected = np.array([2, 3, 4, 5, 6, 8])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -38,7 +38,7 @@ class TestEnv(unittest.TestCase):
             [2, 0, 1]
         ])
         expected = np.array([2, 4, 6, 8])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -47,7 +47,7 @@ class TestEnv(unittest.TestCase):
             [2, 0, 1]
         ])
         expected = np.array([8])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -56,7 +56,7 @@ class TestEnv(unittest.TestCase):
             [2, 2, 1]
         ])
         expected = np.array([])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         # cases with redundancies
@@ -67,7 +67,7 @@ class TestEnv(unittest.TestCase):
             [0, 2, 0]
         ])
         expected = np.array([1, 4, 7])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
         
         state = np.array([
@@ -76,7 +76,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([1, 4, 7, 8])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -85,7 +85,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([1, 2, 3])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -94,7 +94,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([1, 2, 3, 6])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
         
         state = np.array([
@@ -103,7 +103,7 @@ class TestEnv(unittest.TestCase):
             [2, 0, 0]
         ])
         expected = np.array([4, 1, 2])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -112,7 +112,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([4, 1, 2, 7])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
                 
         state = np.array([
@@ -121,7 +121,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 1]
         ])
         expected = np.array([2, 3, 6])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -130,7 +130,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([2, 3, 6, 9])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -139,7 +139,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([1, 2])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
         state = np.array([
@@ -148,7 +148,7 @@ class TestEnv(unittest.TestCase):
             [0, 0, 0]
         ])
         expected = np.array([1, 2, 5])
-        actual = TicTacToe.possible_actions(state)
+        actual = TicTacToe.unique_possible_actions(state)
         np.testing.assert_equal(actual, expected)
 
     def test_did_win(self):
